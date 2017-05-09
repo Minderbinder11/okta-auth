@@ -1,6 +1,5 @@
 //index.js
 
-
 var username = document.getElementById('username');
 var password = document.getElementById('password');
 var button = document.getElementById('submit');
@@ -44,6 +43,24 @@ axios.post('https://dev-477147.oktapreview.com/api/v1/authn', dataString, {
     if (response.data.status === 'SUCCESS') {
       console.log(response.data);
       var sessionToken = response.data.sessionToken;
+
+      axios({
+        method: 'get',
+        url: 'http://localhost:8000/callback/redirect',
+        data: {
+          "sessionToken": sessionToken
+        },
+        headers: {
+          "Accept": "application/json",
+          "Content-Type" : "application/json"
+        }
+      })
+      .then(function(response){
+        console.log(response);
+      })
+      .catch(function(err) {
+        console.log('error ', err);
+      });
 
       // axios({
       //   method: 'post',

@@ -25,7 +25,7 @@ handlers.callback = (req, res) => {
   console.log('!!!!!!!!!!!!!!!!! NEW REQUEST !!!!!!!!!!!!!!!!!!'); 
   console.log(req.headers);
   console.log('COOKIES COOKEIS COOKIES COOKIES COOKIES COOKIES'); 
-  console.log(req.body);
+  console.log('sessionToken: ', req.body.data.sessionToken);
   
   console.log('!!!!!!!!!!!!!!!!! END REQUEST !!!!!!!!!!!!!!!!!!'); 
   console.log('!!!!!!!!!!!!!!!!! END REQUEST !!!!!!!!!!!!!!!!!!'); 
