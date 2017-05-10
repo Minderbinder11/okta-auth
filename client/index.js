@@ -14,8 +14,8 @@ var clientId = 'uyeLjjo3J7bbVpLnTlrV';
 var redirectUrl = 'http://localhost:8000/callback/redirect';
 
 var dataString = {
-  "username": username.value,
-  "password": password.value,
+  "username": 'pbarow@gmail.com',
+  "password": 'BH22escow',
   "relayState": "http://localhost:8000/callback/redirect",
   "options": {
     "multiOptionalFactorEnroll": false,
@@ -44,17 +44,13 @@ axios.post('https://dev-477147.oktapreview.com/api/v1/authn', dataString, {
       console.log(response.data);
       var sessionToken = response.data.sessionToken;
 
-      axios({
-        method: 'get',
-        url: 'http://localhost:8000/callback/redirect',
-        data: {
-          "sessionToken": sessionToken
-        },
-        headers: {
-          "Accept": "application/json",
-          "Content-Type" : "application/json"
-        }
+      axios.get('http://localhost:8000/callback/redirect/' + sessionToken, {
+        someWords: 'kiteallday'
       })
+        // headers: {
+        //   "Accept": "application/json",
+        //   "Content-Type" : "application/json"
+        // })
       .then(function(response){
         console.log(response);
       })
