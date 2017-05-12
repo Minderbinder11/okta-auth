@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', handler.home);
+app.get('/login', handler.login);
 app.get('/callback/redirect', handler.callback);
 
 

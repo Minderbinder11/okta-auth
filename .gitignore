@@ -3,3 +3,5 @@ node_modules
 
 # config files
 config.json
+
+npm-debug.log
