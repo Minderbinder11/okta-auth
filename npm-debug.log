@@ -7,8 +7,8 @@
 6 silly lifecycle okta-auth@1.0.0~prestart: no script for prestart, continuing
 7 info lifecycle okta-auth@1.0.0~start: okta-auth@1.0.0
 8 verbose lifecycle okta-auth@1.0.0~start: unsafe-perm in lifecycle true
-9 verbose lifecycle okta-auth@1.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/PhilBarow/Program/okta-auth/node_modules/.bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/PhilBarow/apache_ant-1.9.5/bin:/usr/local/mysql/bin/
-10 verbose lifecycle okta-auth@1.0.0~start: CWD: /Users/PhilBarow/Program/okta-auth
+9 verbose lifecycle okta-auth@1.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/Phil/HackReactor/okta/okta-auth/node_modules/.bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/Cellar/mysql/5.7.17/bin
+10 verbose lifecycle okta-auth@1.0.0~start: CWD: /Users/Phil/HackReactor/okta/okta-auth
 11 silly lifecycle okta-auth@1.0.0~start: Args: [ '-c', 'babel-node server/index.js' ]
 12 silly lifecycle okta-auth@1.0.0~start: Returned: code: 1  signal: null
 13 info lifecycle okta-auth@1.0.0~start: Failed to exec start script
@@ -23,8 +23,8 @@
 14 verbose stack     at maybeClose (internal/child_process.js:852:16)
 14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
 15 verbose pkgid okta-auth@1.0.0
-16 verbose cwd /Users/PhilBarow/Program/okta-auth
-17 error Darwin 16.6.0
+16 verbose cwd /Users/Phil/HackReactor/okta/okta-auth
+17 error Darwin 16.5.0
 18 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "run" "start"
 19 error node v6.3.1
 20 error npm  v3.10.3

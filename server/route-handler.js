@@ -21,37 +21,38 @@ handlers.login = (req, res) => {
   console.log('sessions object:', req.session);
 
 
-var headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-};
+    var headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
 
-var dataString = `{
-  "username": "pbarow@gmail.com",
-  "password": "BH22escow",
-  "relayState": "http://localhost:8000/callback/redirect",
-  "options": {
-    "multiOptionalFactorEnroll": false,
-    "warnBeforePasswordExpired": false
-  }
-}`;
+    var dataString = `{
+      "username": "pbarow@gmail.com",
+      "password": "BH22escow",
+      "relayState": "http://localhost:8000/callback/redirect",
+      "options": {
+        "multiOptionalFactorEnroll": false,
+        "warnBeforePasswordExpired": false
+      }
+    }`;
 
-var options = {
-    url: 'https://dev-477147.oktapreview.com/api/v1/authn',
-    method: 'POST',
-    headers: headers,
-    body: dataString
-};
+    var options = {
+        url: 'https://dev-477147.oktapreview.com/api/v1/authn',
+        method: 'POST',
+        headers: headers,
+        body: dataString
+    };
 
-function callback(error, response, body) {
-    if (!error && response.statusCode === 200) {
-        body = JSON.parse(body);
-        console.log(body.sessionToken);
+    function callback(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            body = JSON.parse(body);
+            console.log(body.sessionToken);
 
-
-
+/*
+ * authorize call,  using sessionsToken to get access to OAuth and get a id_token  
+ */
         var dataString3 = `{
-          "client_id": "YywcgJ1JVnP3PDxPwysb"
+          "client_id": "83xpWa4wpf7FhSOYDdgz"
           "response_type": "id_token"
           "scope": "openid"
           "prompt": "none"
@@ -69,7 +70,6 @@ function callback(error, response, body) {
         };
 
         function callback3(error, response, body) {
-
           if (error) {
             console.log('error', error);
           } else {
@@ -80,7 +80,6 @@ function callback(error, response, body) {
         request(options3, callback3);
 
     } else {
-
       console.log('##################################');
       //console.log('OKTA Response:', body);
 
@@ -167,8 +166,15 @@ handlers.callback = (req, res) => {
   res.sendFile(path.join(__dirname, '../client/profile.html'));
 };
 
+// curl -H "Accept: application/json" -H "Content-Type: application/json" -d '{"response_type": "id_token", "client_id": "83xpWa4wpf7FhSOYDdgz", "redirect_uri": "http://localhost:8000/authorization-code/callback", "scope": "openid", "state": "thisismystatestring", "nonce": "78yu78yu78yu"}' "https://dev-477147.oktapreview.com/oauth2/v1/authorize"
 
 
+
+/*
+ * api/v1/authn
+ * this will hit the authorize end point to get a session token using a password
+ * this sessionToken will then be used to get a sessionID??
+ */
 
   // var dataString = {
   //   'username': 'pbarow@gmail.com',
