@@ -28,6 +28,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', handler.home);
 app.get('/login', handler.login);
+app.get('/loginoauth', handler.loginoauth);
+app.get('/authorization-code/callback', handler.oauth2);
 app.get('/callback/redirect', handler.callback);
 
 

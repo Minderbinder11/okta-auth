@@ -2,7 +2,6 @@
 
 var request = require('request');
 var getSession = require('./sessions');
-var getOauth = require('./oauth2');
 
 var headers = {
     'Accept': 'application/json',
@@ -30,8 +29,8 @@ function callback(error, response, body) {
   if (!error && response.statusCode === 200) {
     body = JSON.parse(body);
     console.log("session Token: ", body.sessionToken);
-    //getSession(body.sessionToken);
-    getOauth(body.sessionToken);
+    getSession(body.sessionToken);
+    //getOauth(body.sessionToken);
   } else {
     console.log(error);
   }
