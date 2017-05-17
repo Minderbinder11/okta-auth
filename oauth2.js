@@ -6,6 +6,7 @@ const querystring = require('querystring');
 var client_id = '83xpWa4wpf7FhSOYDdgz';
 var client_secret = '-s6qFUbhXPNmRHC8QB6H3HHcn1tkD4KM1pt7HQZi';
 
+var clientandsecred = client_:
 
 var headers = {
     'Accept': 'application/json',
