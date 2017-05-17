@@ -5,6 +5,7 @@
       Auth implementation
     </title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </head>
   
   <body>
@@ -14,20 +15,18 @@
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <input  id="username"
+        <label>Username</label><input  id="username"
                 type="text" 
                 placeholder="username">
         </input>
-        <input  id="password"
+        <label>Password</label><input  id="password"
                 type="text" 
                 placeholder="password">
         </input>
         <button id="submit">
           Click Me
         </button>
-        <button id="oauth">
-          OAuth Login
-        </button>
+        <a href='/login'>go to oauth login</a>
 
   <div id="okta-login">
   </div>
