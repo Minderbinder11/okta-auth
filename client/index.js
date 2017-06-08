@@ -15,22 +15,7 @@ var authClient = new OktaAuth({
 });
 
 
-	authClient.signIn({
-	  username: 'pbarow@gmail.com',
-	  password: 'LA88escow',
-
-	})
-	.then(function(transaction) { // On success
-
-	    console.log('success: ', transaction);
-
-	  switch(transaction.status) {
-	      
-	    case 'SUCCESS':
-	      authClient.session.setCookieAndRedirect(transaction.sessionToken); // Sets a cookie on redirect
-
-
-	     authClient.token.getWithRedirect({
+   authClient.token.getWithRedirect({
 				responseType: 'code'
 				//responseType: 'access_token', // or array of types
 			  // sessionToken: transaction.sessionToken // optional if the user has an existing Okta session
@@ -44,16 +29,33 @@ var authClient = new OktaAuth({
 			  // handle OAuthError
 			});
 
+// 	authClient.signIn({
+// 	  username: 'pbarow@gmail.com',
+// 	  password: 'LA88escow',
 
-	      break;
+// 	})
+// 	.then(function(transaction) { // On success
 
-	    default:
-	      throw 'We cannot handle the ' + transaction.status + ' status';
-	  }
-	})
-	.fail(function(err) { // On failure
-	  console.error(err);
-});
+// 	    console.log('success: ', transaction);
+
+// 	  switch(transaction.status) {
+	      
+// 	    case 'SUCCESS':
+// 	     // authClient.session.setCookieAndRedirect(transaction.sessionToken); // Sets a cookie on redirect
+
+
+	  
+
+
+// 	      break;
+
+// 	    default:
+// 	      throw 'We cannot handle the ' + transaction.status + ' status';
+// 	  }
+// 	})
+// 	.fail(function(err) { // On failure
+// 	  console.error(err);
+// });
 
 var renderOktaWidget = function() {
 
@@ -108,9 +110,7 @@ var renderOktaWidget = function() {
 $('#btnSignOut').click(function () {
 
   oktaSignIn.session.exists(function (authenticated) {
-    
-
-    
+   
     if (authenticated) {
       sessionStorage.removeItem('sessionTokenKey');
       oktaSignIn.tokenManager.remove('my_id_token');

@@ -26,9 +26,10 @@
   },
   "devDependencies": {
     "express-sessions": "^1.0.6",
-    "jws": "^3.1.4"
+    "jws": "^3.1.4",
+    "pem-jwk": "^1.5.1"
   },
-   "babel": {
+  "babel": {
     "presets": [
       "es2015"
     ]
