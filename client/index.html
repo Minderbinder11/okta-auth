@@ -4,7 +4,16 @@
     <title>
       Auth implementation
     </title>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+    <!-- axios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.min.js"></script>
+    
+    <!-- Okta Auth -->
+    <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-auth-js/1.5.0/OktaAuth.min.js" type="text/javascript"></script>
+
   </head>
   
   <body>
@@ -23,6 +32,47 @@
                 placeholder="password">
         </input>
         <a href="/login" class="btn btn-primary">Log in with Spotify</a> 
+
+        <div id="sign-in-container"></div>
+
+    <div id="apicall-buttons">
+      <h1 class="welcome-msg">Welcome <span id="logged-in-res"></span></h1>
+      <table class="user-info">
+        <th class="colA">
+          Property
+        </th>
+        <th>
+          Value
+        </th>
+        <tr>
+          <td class="colA">First Name</td>
+          <td id="first-name"></td>
+        </tr>  
+        <tr>
+          <td class="colA">Last Name</td>
+          <td id="last-name"></td>
+        </tr>
+        <tr>
+          <td class="colA">Username</td>
+          <td id="username"></td>
+        </tr>
+        <tr>
+          <td>Token Issuer</td>
+          <td id="iss"></td>
+        </tr>       
+        <tr>
+          <td>Token Issued At</td>
+          <td id="iat"></td>
+        </tr> 
+         <tr>
+          <td>Token Expires At</td>
+          <td id="exp"></td>
+        </tr>           
+      </table>
+      <br />
+      <button id="btnSignOut" class="btn btn-lg btn-primary">Sign Out</button>
+      <button id="btnRenewIDToken" class="btn btn-lg btn-primary">Renew Token</button>
+    </div>
   </body>
-  <script type="text/javascript" src="./client/index.js"></script>
+  <script type="text/javascript" src="index.js"></script>
 </html>
