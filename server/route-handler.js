@@ -28,63 +28,82 @@ handlers.home = (req, res) => {
 
 handlers.login = (req, res) => {
 
-  // req.session.visitCount = req.session.visitCount ? req.session.visitCount + 1 : 1;
-  // console.log('sessions object:', req.session);
+  console.log(req.session);
 
-// im going to try the redirect here
+  // steps:
+  // 1. get username password
+  // 2. use that to get the userID
+  // 3. check for MFA with userID
+  // 4. if none, success, and redirect to home page
+  // 5. if MFA,  prompt for MFA verification
 
-console.log('in redirect');
 
-var redirectString = authorize_uri + querystring.stringify({
-      client_id: client_id,
-      response_type: 'code',
-      scope: 'offline_access',
-      redirect_uri: redirect_uri,
-      state: state_string,
-      nonce: nonce
-    });
+// the req.params from the buttonclick should be pulled off and put in username and password
 
-console.log(redirectString);
+  var options = { method: 'POST',
+    url: 'https://dev-477147.oktapreview.com/api/v1/authn',
+    headers: 
+    { 'postman-token': '72eb3a12-833a-733f-dc0e-34c42765b1e3',
+      'cache-control': 'no-cache',
+      'content-type': 'application/json',
+      'accept': 'application/json' },
+  body: 
+   { username: 'steinbeck@dev-477147.com',
+     password: 'Barnegat01',
+     options: 
+      { multiOptionalFactorEnroll: true,
+        warnBeforePasswordExpired: true } },
+  json: true };
 
- //res.redirect('https://dev-477147.oktapreview.com/oauth2/ausahaw5ezTByBxnQ0h7/v1/authorize?client_id=83xpWa4wpf7FhSOYDdgz&response_type=code&scope= offline_access&redirect_uri=http://localhost:8000/authorization-code/callback&state=statestring&nonce=ghghghgh787878&sessionToken=201111DVJbmR8nn2easfla5eF1ZMFpJ_cPLMmYxSeZvf-mLNme6MThl');
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
 
- request.get('https://dev-477147.oktapreview.com/oauth2/ausahaw5ezTByBxnQ0h7/v1/authorize?client_id=83xpWa4wpf7FhSOYDdgz&response_type=code&scope= offline_access&redirect_uri=http://localhost:8000/authorization-code/callback&state=statestring&nonce=ghghghgh787878&sessionToken=201111DVJbmR8nn2easfla5eF1ZMFpJ_cPLMmYxSeZvf-mLNme6MThl')
- .on('response', result => {
-    console.log(result);
- });
+    if (body.status === 'SUCCESS') {
+      console.log('Great Success', body._embedded.user.id);
 
-  // var dataString = `{
-  //   "username": "pbarow@gmail.com",
-  //   "password": "BH22escow",
-  //   "relayState": "http://localhost:8000/callback/redirect",
-  //   "options": {
-  //     "multiOptionalFactorEnroll": false,
-  //     "warnBeforePasswordExpired": false
-  //   }
-  // }`;
+      // gets the list of factors:
 
-  // var options = {
-  //   url: 'https://dev-477147.oktapreview.com/api/v1/authn',
-  //   method: 'POST',
-  //   headers: headers,
-  //   body: dataString
-  // };
+      var options = { 
+        method: 'GET',
+        url: 'https://dev-477147.oktapreview.com/api/v1/users/' + body._embedded.user.id + '/factors',
+        headers: 
+          { 'postman-token': 'd690f462-1de9-fe08-99ad-b2edfc16f1bf',
+            'cache-control': 'no-cache',
+            'authorization': 'SSWS 00p_Z5emQrIXfw228qBmju0GtmVdDb3V_Vp0gwkpNb',
+            'content-type': 'application/json',
+            'accept': 'application/json' } 
+          };
 
-  // function callback(error, response, body) {
-  //   if (!error && response.statusCode === 200) {
-  //     body = JSON.parse(body);
-  //     console.log(body.sessionToken);
+      request(options, function (error, response, body) {
+        
+        if (error) throw new Error(error);
+        
+        if (body.length > 0) {
+          // if there is MFA
+          body = JSON.parse(body);
+          console.log('Factor ID: ', body[0].id);
+          console.log('Factor ID: ', body[0].factorType); 
+          // there is an MFA,  so I need to get i
+          // send the user to the page for the MFAs numbers.
+          //res.sendFile(path.join(__dirname, '../client/profile.html'));
+          res.send('<p>some html</p>');
+        } else {
+          // then there are no MFAs and we need to redirect home page
+          res.sendFile(path.join(__dirname, '../client/profile.html'));
+        }
 
-  //   } else {
-  //     console.log('##################################');
-  //     //console.log('OKTA Response:', body);
-  //   }
-  // }
-  // // this works to obtain a session Token at body.sessionToken
-  // request(options, callback);
+      });
+    
+    }
+  });
+
 
 };
 
+handlers.page = (req, res) => {
+  console.log('new page');
+  res.sendFile(path.join(__dirname, '../client/profile.html'));
+};
 
 handlers.loginoauth = (req, res) => {
 
