@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 //index.js
 
@@ -28,6 +29,10 @@ button.addEventListener('click', () => {
 //app.js
 // var qs = require('querystring');
 
+=======
+//index.js
+
+>>>>>>> a9c53a10aeafb4b8f8a9d0cfd8ff849625472f73
 var orgUrl = 'https://dev-477147.oktapreview.com';
 const clientId = 'cEBoZvS44tkt5R5VL7pX';
 var redirectUrl = 'http://localhost:8000/authorization-code/callback';
@@ -40,70 +45,12 @@ var authClient = new OktaAuth({
   scopes: ['openid', 'email', 'profile'],
 });
 
+var submit = document.getElementById('submit');
 
-   authClient.token.getWithRedirect({
-				responseType: 'code'
-				//responseType: 'access_token', // or array of types
-			  // sessionToken: transaction.sessionToken // optional if the user has an existing Okta session
-			})
-			.then(function(token) {
-			  // manage token or tokens
-				console.log('token: ', token)
-
-			})
-			.catch(function(err) {
-			  // handle OAuthError
-			});
-
-// 	authClient.signIn({
-// 	  username: 'pbarow@gmail.com',
-// 	  password: 'LA88escow',
-
-// 	})
-// 	.then(function(transaction) { // On success
-
-// 	    console.log('success: ', transaction);
-
-// 	  switch(transaction.status) {
-	      
-// 	    case 'SUCCESS':
-// 	     // authClient.session.setCookieAndRedirect(transaction.sessionToken); // Sets a cookie on redirect
+submit.addEventListener('click', (e) => { 
+	authClient.token.getWithRedirect({
+		responseType: 'code'
+	})
+});  
 
 
-	  
-
-
-// 	      break;
-
-
-
-$('#btnSignOut').click(function () {
-
-  oktaSignIn.session.exists(function (authenticated) {
-   
-    if (authenticated) {
-      sessionStorage.removeItem('sessionTokenKey');
-      oktaSignIn.tokenManager.remove('my_id_token');
-      
-      oktaSignIn.session.close(function () {
-          $("#apicall-buttons").hide();
-          $('#sign-in-container').show();
-          location.reload(true)
-        
-      });
-    };
-  });
-});
-
-  $('#btnRenewIDToken').click(function () {
-      oktaSignIn.tokenManager.refresh('my_id_token').
-      then(function (res) {
-        
-        console.log('token manager refresh: ', res);  
-        var d =    
-        console.log('New ID token: ', new Date(res.claims.iat*1000));
-        $('#iat').html(new Date(res.claims.iat*1000));
-        $('#exp').html(new Date(res.claims.exp*1000));
-        
-      });
-  });

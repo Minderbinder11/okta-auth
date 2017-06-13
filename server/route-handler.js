@@ -1,4 +1,3 @@
-// route-handler.js
 'use strict';
 const request = require('request');
 const querystring = require('querystring');
@@ -159,3 +158,4 @@ handlers.callback = (req, res) => {
 
   res.sendFile(path.join(__dirname, '../client/profile.html'));
 };
+

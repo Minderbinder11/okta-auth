@@ -2,6 +2,8 @@
 
 import express 			from 'express';
 import request			from 'request';
+import session      from 'express-session';
+import bodyParser   from 'body-parser';
 import qs 					from 'querystring';
 import cookieParser from 'cookie-parser';
 import path 				from 'path';
@@ -11,58 +13,57 @@ import { jwk2pem }	from 'pem-jwk';
 var clientId = 'cEBoZvS44tkt5R5VL7pX'; // Your client id
 const clientSecret = 'M3_PuCqN1hWdjAvWMSkUTEqaaasJzwNTadbj4HvV';
 const cachedJwks = {};
-const oktaUrl = 'https://dev-477147.oktapreview.com'
-
-// var client_secret = '-s6qFUbhXPNmRHC8QB6H3HHcn1tkD4KM1pt7HQZi'; // Your secret
-var redirect_uri = 'http://localhost:8000/callback/redirect'; // Your redirect uri
-
-
-var generateRandomString = (length) => {
-	var text = '';
- 	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
- 	for (var i = 0; i< length; i++) {
- 		text += possible.charAt(Math.floor(Math.random() * possible.length));
- 	}
- 	return text;
-}
-
-const stateKey = 'app_auth_state';
+const oktaUrl = 'https://dev-477147.oktapreview.com';
+const redirectUrl = 'http://localhost:8000/authorization-code/callback';
 
 var app = express();
 
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(cookieParser());
 
+app.use(session({
+  secret: 'mt tamalpais',
+  cookie: { maxAge: 3600000 },
+  resave: false,
+  saveUninitialized: false,
+}));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+function requireAuth (req, res, next) {
+  if (req.session.user) { 
+    return next();
+  } else {
+    res.redirect('/');
+  }
+}
+
+
 app.get('/authorization-code/callback', (req, res) => {
 
 	let nonce;
   let state;
 
-  // cookies are set on the client and come backl from the authorization server
   if (req.cookies['okta-oauth-nonce'] && req.cookies['okta-oauth-state']) {
+  	var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params'])
     nonce = req.cookies['okta-oauth-nonce'];
-    state = req.cookies['okta-oauth-state'];
-    console.log('cookies present', req.cookies['okta-oauth-state']);
+    state = redirectParams.state;
+  } else {
+    res.status(401).send('"state" and "nonce" cookies have not been set before the /callback request');
+    return;
   }
-  // else {
-  //   res.status(401).send('"state" and "nonce" cookies have not been set before the /callback request');
-  //   return;
-  // }
 
-  // if (!req.query.state || req.query.state !== state) {
-  //   res.status(401).send(`Query state "${req.query.state}" does not match cookie state "${state}"`);
-  //   return;
-  // }
+  if (!req.query.state || req.query.state !== state) {
+    res.status(401).send(`Query state "${req.query.state}" does not match cookie state "${state}"`);
+    return;
+  }
 
   if (!req.query.code) {
     console.log('route /authorization-code/callback', req.query);
     res.status(401).send('Required query parameter "code" is missing');
     return;
   }
-
-  // The default token auth method is 'client_secret_basic'
-  // compute the secret
 
 	const secret = new Buffer(clientId + ':' + clientSecret, 'utf8').toString('base64');
 
@@ -85,7 +86,6 @@ app.get('/authorization-code/callback', (req, res) => {
 
 	request(options, function (err, response, json) {
 	  if (err) {
-	      // good piece of form here
 	      res.status(500).send(err);
 	      return;
 	    }
@@ -128,7 +128,7 @@ app.get('/authorization-code/callback', (req, res) => {
           res.status(401).send('No public key for the returned id_token');
           return;
         }
-
+        console.log('resolve this: :', cachedJwks[decoded.header.kid]);
         resolve(cachedJwks[decoded.header.kid]);
       });
     })
@@ -187,35 +187,40 @@ app.get('/authorization-code/callback', (req, res) => {
       //
       // In this sample app, we'll take a shortcut and just set some of the
       // claims as the "user object"
-      console.log('&&&&&&&&&&&&&&&&');
 
       // req.session.user = {
       //   email: claims.email,
       //   claims: claims
       // };
-      console.log('**********************');
       //console.log('user session: ', req.session.user);
 
       // Now that the session cookie is set, we can navigate to the logged-in
       // app page.
-      res.status(200).json({status: 'SUCCESS'});
+      req.session.user = {
+        claims: claims,
+        user: claims.email
+      }
+    
+      console.log('user session: ', req.session.user);
+      res.redirect(302, '/profile');
+      //res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
+      //res.status(200).send('<h2>You are logged in</h2>');
 
 		})
 		 .catch(err => res.status(500).send(`Error! ${JSON.stringify(err)}`));
 	});
 });
 
-app.get('token-callback/redirect', (req, res) => {
-	console.log('in token callback');
+app.get('/profile', requireAuth, (req, res) => {
+
+  //res.json({status: 'SUCCESS'});
+  res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
 
 });
 
-app.post('/callback/redirect', (req, res) => {
-	//console.log(req);
-	console.log('in POST callback: ', req.query);
-
-	//res.redirect('/')
-});
+app.get('/*', ( req, res) => {
+  res.redirect('/');
+}); 
 
 app.listen(8000, () =>{
 	console.log('listening on port 8000');
