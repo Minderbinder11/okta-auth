@@ -159,24 +159,3 @@ handlers.callback = (req, res) => {
 
   res.sendFile(path.join(__dirname, '../client/profile.html'));
 };
-
-// curl -H "Accept: application/json" -H "Content-Type: application/json" -d '{"response_type": "id_token", "client_id": "83xpWa4wpf7FhSOYDdgz", "redirect_uri": "http://localhost:8000/authorization-code/callback", "scope": "openid", "state": "thisismystatestring", "nonce": "78yu78yu78yu"}' "https://dev-477147.oktapreview.com/oauth2/v1/authorize"
-
-
-
-
-//  curl -v POST \
-//  -H 'Accept: application/json'\
-//  -H 'Authorization: Basic ODN4cFdhNHdwZjdGaFNPWURkZ3o6LXM2cUZVYmhYUE5tUkhDOFFCNkgzSEhjbjF0a0Q0S00xcHQ3SFFaaQ=='\
-//  -d '{"grant_type": "password",\
-//      "redirect_uri": "http://localhost:8000/authorization-code/callback",\
- //     "username": "pbarow@gmail.com",\
-//      "password": "BH22escow"\
-//      }' "https://dev-477147.oktapreview.com/oauth2/ausahaw5ezTByBxnQ0h7/v1/token"
-
-
- 
-
-// Authorization: Basic ${Base64(<client_id>:<client_secret>)}
-
-
