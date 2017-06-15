@@ -1,5 +1,5 @@
-//index2.js
-
+// index2.js
+// this code uses code written 
 import express 			from 'express';
 import request			from 'request';
 import session      from 'express-session';
@@ -39,14 +39,13 @@ function requireAuth (req, res, next) {
   }
 }
 
-
 app.get('/authorization-code/callback', (req, res) => {
 
 	let nonce;
   let state;
 
   if (req.cookies['okta-oauth-nonce'] && req.cookies['okta-oauth-state']) {
-  	var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params'])
+  	var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params']);
     nonce = req.cookies['okta-oauth-nonce'];
     state = redirectParams.state;
   } else {
@@ -135,85 +134,49 @@ app.get('/authorization-code/callback', (req, res) => {
     .then((jwk) => {
       const claims = JSON.parse(decoded.payload);
 
-      console.log('ID_token claims: ', claims);
-
-      // Using the jwk, verify that the id_token signature is valid. In this
-      // case, the library we're using, JWS, requires PEM encoding for our JWK.
       const pem = jwk2pem(jwk);
       if (!jws.verify(json.id_token, jwk.alg, pem)) {
         res.status(401).send('id_token signature is invalid');
         return;
       }
-      // Verify that the nonce matches the nonce generated on the client side
-      // if (nonce !== claims.nonce) {
-      //   res.status(401).send(`claims.nonce "${claims.nonce}" does not match cookie nonce ${nonce}`);
-      //   return;
-      // }
 
-      // Verify that the issuer is Okta, and specifically the endpoint that we
-      // performed authorization against.
       if (oktaUrl !== claims.iss) {
         res.status(401).send(`id_token aud ${claims.aud} does not match our clientId ${clientId}`);
         return;
       }
 
-      // Verify that the id_token was minted specifically for our clientId
       if (clientId !== claims.aud) {
         res.status(401).send(`id_token aud ${claims.aud} does not match our clientId ${clientId}`);
         return;
       }
 
-      // Verify the token has not expired. It is also important to account for
-      // clock skew in the event this server or the Okta authorization server has
-      // drifted.
       const now = Math.floor(new Date().getTime() / 1000);
 
-      const maxClockSkew = 300; // 5 minutes
+      const maxClockSkew = 300; 
       if (now - maxClockSkew > claims.exp) {
         const date = new Date(claims.exp * 1000);
         res.status(401).send(`The JWT expired and is no longer valid - claims.exp ${claims.exp}, ${date}`);
         return;
       }
 
-      // Verify that the token was not issued in the future (accounting for clock
-      // skew).
       if (claims.iat > (now + maxClockSkew)) {
         res.status(401).send(`The JWT was issued in the future - iat ${claims.iat}`);
         return;
       }
 
-      // The id_token is good! In a real app, this is the point where you would
-      // lookup the user in a user store, and set the session for the user.
-      //
-      // In this sample app, we'll take a shortcut and just set some of the
-      // claims as the "user object"
-
-      // req.session.user = {
-      //   email: claims.email,
-      //   claims: claims
-      // };
-      //console.log('user session: ', req.session.user);
-
-      // Now that the session cookie is set, we can navigate to the logged-in
-      // app page.
       req.session.user = {
         claims: claims,
         user: claims.email
-      }
+      };
     
-      console.log('user session: ', req.session.user);
       res.redirect(302, '/profile');
-      //res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
-      //res.status(200).send('<h2>You are logged in</h2>');
-
 		})
-		 .catch(err => res.status(500).send(`Error! ${JSON.stringify(err)}`));
+		.catch(err => res.status(500).send(`Error! ${JSON.stringify(err)}`));
 	});
 });
 
 app.get('/profile', requireAuth, (req, res) => {
 
-  //res.json({status: 'SUCCESS'});
   res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
 
 });

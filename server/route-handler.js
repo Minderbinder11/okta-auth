@@ -29,16 +29,6 @@ handlers.login = (req, res) => {
 
   console.log(req.session);
 
-  // steps:
-  // 1. get username password
-  // 2. use that to get the userID
-  // 3. check for MFA with userID
-  // 4. if none, success, and redirect to home page
-  // 5. if MFA,  prompt for MFA verification
-
-
-// the req.params from the buttonclick should be pulled off and put in username and password
-
   var options = { method: 'POST',
     url: 'https://dev-477147.oktapreview.com/api/v1/authn',
     headers: 

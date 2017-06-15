@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index2.js --exec babel-node --presets es2015 --watch",
-    "start-webpack": "webpack --config webpack.config.js --progress --colors --watch",
+    "start-webpack": "webpack --config webpack.config.js --progress --colors --watch", 
     "start-SSR": "babel-node -- server/serverSSR.js"
   },
   "keywords": [],
