@@ -191,6 +191,7 @@ app.get('/profile', requireAuth, (req, res) => {
 app.get('/test', (req, res) => {
   console.log('request', req.cookies);
   console.log('server session info', req.session.user);
+  res.status(200).json({status: 'SUCCESS'});
 });
 
 

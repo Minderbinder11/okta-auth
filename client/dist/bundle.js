@@ -11662,6 +11662,10 @@ var _react = __webpack_require__(7);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _config = __webpack_require__(250);
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11676,19 +11680,41 @@ var HomePage = function (_React$Component) {
   function HomePage(props) {
     _classCallCheck(this, HomePage);
 
-    return _possibleConstructorReturn(this, (HomePage.__proto__ || Object.getPrototypeOf(HomePage)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (HomePage.__proto__ || Object.getPrototypeOf(HomePage)).call(this, props));
+
+    _this.click = _this.click.bind(_this);
+    _this.authClient = new OktaAuth({
+      url: _config2.default.oidc.oktaUrl,
+      clientId: _config2.default.oidc.clientId,
+      redirectUri: _config2.default.oidc.redirectUri,
+      scopes: ['openid', 'email', 'profile']
+    });
+    return _this;
   }
 
   _createClass(HomePage, [{
+    key: 'click',
+    value: function click(e) {
+      e.preventDefault();
+      this.authClient.token.getWithRedirect({
+        responseType: 'code'
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'h2',
-          null,
-          'Home Page'
+          'div',
+          { id: 'root', 'class': 'welcome' },
+          _react2.default.createElement('img', { src: 'img/updateUser.png', 'class': 'login-image' }),
+          _react2.default.createElement(
+            'button',
+            { onClick: this.click },
+            'Click here to access the ACME APIs'
+          )
         )
       );
     }
@@ -27040,6 +27066,31 @@ var valueEqual = function valueEqual(a, b) {
 };
 
 exports.default = valueEqual;
+
+/***/ }),
+/* 250 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"oidc": {
+		"oktaUrl": "https://dev-477147.oktapreview.com",
+		"clientId": "cEBoZvS44tkt5R5VL7pX",
+		"clientSecret": "M3_PuCqN1hWdjAvWMSkUTEqaaasJzwNTadbj4HvV",
+		"redirectUri": "http://localhost:8000/authorization-code/callback"
+	},
+	"server": {
+		"staticDir": "dist",
+		"port": 8000,
+		"framework": "express-4",
+		"environment": "NodeJs"
+	},
+	"mockOkta": {
+		"port": 7777,
+		"proxy": "http://127.0.0.1",
+		"proxied": "http://rain.okta1.com:1802",
+		"cdn": "http://cdn.okta1.com"
+	}
+};
 
 /***/ })
 /******/ ]);
