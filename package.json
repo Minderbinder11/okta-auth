@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index2.js --exec babel-node --presets es2015 --watch",
-    "start-webpack": "webpack --config webpack.config.js --progress --colors --watch", 
-    "start-SSR": "babel-node -- server/serverSSR.js"
+    "start-webpack": "webpack --config webpack.config.js --progress --colors --watch",
+    "start": "nodemon server/index2.js --exec babel-node --presets es2015 --watch"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +13,7 @@
   "dependencies": {
     "@okta/okta-auth-js": "^1.8.0",
     "@okta/okta-signin-widget": "^1.11.0",
+    "axios": "^0.16.2",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",

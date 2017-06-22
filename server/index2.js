@@ -1,5 +1,8 @@
 // index2.js
-// this code uses code written 
+// this code uses code written the Okta copyrighted files.
+// for their code,  please see this github repositiory:
+// https://github.com/okta/samples-js-react
+
 import express 			from 'express';
 import request			from 'request';
 import session      from 'express-session';
@@ -9,13 +12,13 @@ import cookieParser from 'cookie-parser';
 import path 				from 'path';
 import jws 					from 'jws';
 import { jwk2pem }	from 'pem-jwk';
+import config       from '../config.json';
 
-var clientId = 'cEBoZvS44tkt5R5VL7pX'; // Your client id
-const clientSecret = 'M3_PuCqN1hWdjAvWMSkUTEqaaasJzwNTadbj4HvV';
+var clientId = config.oidc.clientId; 
+const clientSecret = config.oidc.clientSecret;
 const cachedJwks = {};
-const oktaUrl = 'https://dev-477147.oktapreview.com';
-const redirectUrl = 'http://localhost:8000/authorization-code/callback';
-
+const oktaUrl =  config.oidc.oktaUrl; 
+const redirectUrl = config.oidc.redirectUri; 
 var app = express();
 
 app.use(express.static(path.join(__dirname, '../client')));
@@ -43,15 +46,19 @@ app.get('/authorization-code/callback', (req, res) => {
 
 	let nonce;
   let state;
+  var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params']);
+  console.log('req.cookies', req.cookies);
+  //console.log('req.query', redirectParams['state']);
 
-  if (req.cookies['okta-oauth-nonce'] && req.cookies['okta-oauth-state']) {
+  if (redirectParams['nonce'] && redirectParams['state']) {
   	var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params']);
     nonce = req.cookies['okta-oauth-nonce'];
     state = redirectParams.state;
-  } else {
-    res.status(401).send('"state" and "nonce" cookies have not been set before the /callback request');
-    return;
   }
+  //else {
+  //  res.status(401).send('"state" and "nonce" cookies have not been set before the /callback request');
+  //  return;
+  //}
 
   if (!req.query.state || req.query.state !== state) {
     res.status(401).send(`Query state "${req.query.state}" does not match cookie state "${state}"`);
@@ -180,6 +187,12 @@ app.get('/profile', requireAuth, (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
 
 });
+
+app.get('/test', (req, res) => {
+  console.log('request', req.cookies);
+  console.log('server session info', req.session.user);
+});
+
 
 app.get('/*', ( req, res) => {
   res.redirect('/');
