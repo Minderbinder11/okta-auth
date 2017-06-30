@@ -47,7 +47,7 @@ app.get('/authorization-code/callback', (req, res) => {
 	let nonce;
   let state;
   var redirectParams = JSON.parse(req.cookies['okta-oauth-redirect-params']);
-  console.log('req.cookies', req.cookies);
+  //console.log('req.cookies', req.cookies);
   //console.log('req.query', redirectParams['state']);
 
   if (redirectParams['nonce'] && redirectParams['state']) {
@@ -66,7 +66,7 @@ app.get('/authorization-code/callback', (req, res) => {
   }
 
   if (!req.query.code) {
-    console.log('route /authorization-code/callback', req.query);
+    //console.log('route /authorization-code/callback', req.query);
     res.status(401).send('Required query parameter "code" is missing');
     return;
   }
@@ -106,7 +106,7 @@ app.get('/authorization-code/callback', (req, res) => {
 	    res.status(401).send('id_token could not be decoded from the response');
 	    return;
 	  }
-	  console.log('decoded: ', decoded);
+	  console.log('json token ', json);
 
 	  new Promise((resolve, reject) => {
       // If we've already cached this JWK, return it
@@ -146,6 +146,7 @@ app.get('/authorization-code/callback', (req, res) => {
         res.status(401).send('id_token signature is invalid');
         return;
       }
+      console.log(json.id_token);
 
       if (oktaUrl !== claims.iss) {
         res.status(401).send(`id_token aud ${claims.aud} does not match our clientId ${clientId}`);
@@ -175,7 +176,10 @@ app.get('/authorization-code/callback', (req, res) => {
         claims: claims,
         user: claims.email
       };
-    
+
+      console.log('rediret to profile');
+
+      // here is where I need to send the response wit a header
       res.redirect(302, '/profile');
 		})
 		.catch(err => res.status(500).send(`Error! ${JSON.stringify(err)}`));
@@ -184,7 +188,8 @@ app.get('/authorization-code/callback', (req, res) => {
 
 app.get('/profile', requireAuth, (req, res) => {
 
-  res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
+  console.log ('in profile');
+ res.status(200).sendFile(path.join(__dirname, '../client/profile.html'));
 
 });
 

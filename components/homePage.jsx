@@ -16,6 +16,7 @@ export default class HomePage extends React.Component {
 
   click(e) {
     e.preventDefault();
+
     this.authClient.token.getWithRedirect({
       responseType: 'code'
     });
